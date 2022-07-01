@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace InventorySystem
 {
@@ -6,7 +7,49 @@ namespace InventorySystem
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Console.WriteLine("Welcome to the Centralized Book System!\n");
+
+            MainMenu();
+        }
+
+        public static void MainMenu()
+        {
+            //List<Book> Books = new List<Book>();
+            Book Book = new Book();
+
+            while (true)
+            {
+                Console.WriteLine("(Add) a new book\n" +
+                    "(Find) a book\n" +
+                    "(Calculate) total value of books\n" +
+                    "(List) all books in library\n" +
+                    "(Quit) Application\n");
+                Console.Write("Select an option: ");
+
+                string menuSelection = Console.ReadLine();
+
+                switch (menuSelection.ToLower())
+                {
+                    case "add":
+                        Book.Add();
+                        break;
+                    case "find":
+                        //Book.find();
+                        break;
+                    case "calculate":
+                        //Book.calculateValue();
+                        break;
+                    case "list":
+                        Book.List();
+                        break;
+                    case "quit":
+                        return;
+                    default:
+                        Console.Clear();
+                        Console.WriteLine("Invalid option. Please try again.\n");
+                        break;
+                }
+            }
         }
     }
 }
