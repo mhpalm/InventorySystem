@@ -6,13 +6,19 @@ using Newtonsoft.Json;
 
 namespace InventorySystem
 {
+    [Serializable]
     public class Book
     {
-        public int Id { get; private set; }
-        public string Name { get; set; }
-        public string Author { get; set; }
-        public double Value { get; set; }
-        public string Location { get; set; }
+        [JsonProperty("Id")]
+        public int BookId { get; private set; }
+        [JsonProperty("Name")]
+        public string BookName { get; set; }
+        [JsonProperty("Author")]
+        public string BookAuthor { get; set; }
+        [JsonProperty("Value")]
+        public double BookCost { get; set; }
+        [JsonProperty("Location")]
+        public string BookLocation { get; set; }
 
         private string filePath = "bookdata.json";
         public List<string> records = new List<string>();
@@ -24,76 +30,72 @@ namespace InventorySystem
 
         public Book(int id, string name, string author, double value, string location)
         {
-            Id = id;
-            Name = name;
-            Author = author;
-            Value = value;
-            Location = location;
+            BookId = id;
+            BookName = name;
+            BookAuthor = author;
+            BookCost = value;
+            BookLocation = location;
         }
         public List<Book> Books = new List<Book>();
-        
+
         public void Add()
         {
-            var bookId = Id;
+            var bookId = BookId;
 
             Console.Write("What is the title of the book? ");
             string bookName = Console.ReadLine();
 
             Console.Write("Who is the author? ");
             string authorName = Console.ReadLine();
-            
+
             Console.Write("How much did the book cost? ");
             double bookCost = int.Parse(Console.ReadLine());
-            
+
             Console.Write("Where is the book located? ");
             string bookLocation = Console.ReadLine();
 
-            Books.Add(new Book (bookId, bookName, authorName, bookCost, bookLocation));
+            Books.Add(new Book(bookId, bookName, authorName, bookCost, bookLocation));
 
             var fileData = new Book();
             {
-                fileData.Id = bookId;
-                fileData.Name = bookName;
-                fileData.Author = authorName;
-                fileData.Value = bookCost;
-                fileData.Location = bookLocation;
+                fileData.BookId = bookId;
+                fileData.BookName = bookName;
+                fileData.BookAuthor = authorName;
+                fileData.BookCost = bookCost;
+                fileData.BookLocation = bookLocation;
             }
-            /*
-            object fileData = $"ID: {bookId}\r" +
-                $"Title: {bookName}\r" +
-                $"Author: {authorName}\r" +
-                $"Value: {bookCost}\r" +
-                $"Location: {bookLocation}\r";
-            */
-            Console.WriteLine(fileData);
-            Id++;
+            Console.WriteLine($"{bookName} has been successfully added into the library!");
+
+            BookId++;
 
             var bookJson = JsonConvert.SerializeObject(fileData);
             File.AppendAllText(filePath, bookJson);
-            
+
             Console.WriteLine(bookJson);
             Console.ReadLine();
         }
         public void List()
         {
-
             Console.Clear();
-            //List<Book> book = JsonConvert.DeserializeObject<Book>(filePath);
-            
-            records = File.ReadAllLines(filePath).ToList();
 
-            foreach (String record in records)
+            var bookJson = JsonConvert.DeserializeObject<Book[]>(File.ReadAllText(filePath));
+
+            foreach (var book in bookJson)
             {
-                Console.WriteLine(record);
+                Console.WriteLine($"ID: {book.BookId}\nTitle: {book.BookName}\nAuthor: {book.BookAuthor}\nValue: {book.BookCost}\nLocation: {book.BookLocation}\n");
             }
 
-            /*
-            foreach (Book book in Books)
-            {
-                Console.WriteLine($"ID: {book.Id}\nTitle: {book.Name}\nAuthor: {book.Author}\nValue: {book.Value}\nLocation: {book.Location}\n");
-            }
-            */
             Console.ReadLine();
+        }
+
+        public void CalculateValue()
+        {
+            Console.Clear();
+
+            var bookJson = JsonConvert.DeserializeObject<Book[]>(File.ReadAllText(filePath));
+
+            var sumValue = bookJson.Sum(x => x.BookCost);
+            Console.WriteLine($"The total value of your library is currently ${sumValue}");
         }
     }
 }

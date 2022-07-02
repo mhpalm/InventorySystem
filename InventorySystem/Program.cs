@@ -36,7 +36,7 @@ namespace InventorySystem
                         //Book.find();
                         break;
                     case "calculate":
-                        //Book.calculateValue();
+                        Book.CalculateValue();
                         break;
                     case "list":
                         Book.List();
