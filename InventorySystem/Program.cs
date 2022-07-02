@@ -14,7 +14,6 @@ namespace InventorySystem
 
         public static void MainMenu()
         {
-            //List<Book> Books = new List<Book>();
             Book Book = new Book();
 
             while (true)
