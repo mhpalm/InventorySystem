@@ -82,20 +82,46 @@ namespace InventorySystem
 
             foreach (var book in bookJson)
             {
-                Console.WriteLine($"ID: {book.BookId}\nTitle: {book.BookName}\nAuthor: {book.BookAuthor}\nValue: {book.BookCost}\nLocation: {book.BookLocation}\n");
+                Console.WriteLine($"ID: {book.BookId}\nTitle: {book.BookName}\nAuthor: {book.BookAuthor}\nValue: {book.BookCost.ToString("C")}\nLocation: {book.BookLocation}\n");
             }
 
             Console.ReadLine();
         }
 
-        public void CalculateValue()
+        public void Calculate()
         {
             Console.Clear();
 
             var bookJson = JsonConvert.DeserializeObject<Book[]>(File.ReadAllText(filePath));
 
             var sumValue = bookJson.Sum(x => x.BookCost);
-            Console.WriteLine($"The total value of your library is currently ${sumValue}");
+            Console.WriteLine($"The total value of your library is currently {sumValue.ToString("C")}");
+        }
+
+        public void Find()
+        {
+            Console.Clear();
+
+            var bookJson = JsonConvert.DeserializeObject<Book[]>(File.ReadAllText(filePath));
+
+            Console.Write("What book would you like to find? ");
+            var desiredBook = Console.ReadLine().ToLower();
+
+            var findBook = from book in bookJson 
+                           where book.BookName.ToLower().Equals(desiredBook) 
+                           orderby book ascending 
+                           select book;
+
+            foreach(var b in findBook)
+            {
+                Console.WriteLine($"" +
+                    $"ID: {b.BookId}\n" +
+                    $"Title: {b.BookName}\n" +
+                    $"Author: {b.BookAuthor}\n" +
+                    $"Cost: {b.BookCost.ToString("C")}\n" +
+                    $"Location: {b.BookLocation}\n");
+            }
+
         }
     }
 }

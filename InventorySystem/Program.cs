@@ -33,10 +33,10 @@ namespace InventorySystem
                         Book.Add();
                         break;
                     case "find":
-                        //Book.find();
+                        Book.Find();
                         break;
                     case "calculate":
-                        Book.CalculateValue();
+                        Book.Calculate();
                         break;
                     case "list":
                         Book.List();
