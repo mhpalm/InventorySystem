@@ -70,12 +70,34 @@ namespace InventorySystem
                 case "return":
                     break;
                 default:
-                    Console.Clear();
                     Console.WriteLine("Invalid option. Please try again.\n");
                     FindMenu();
                     break;
             }
          
+        }
+
+        public static void ResultMenu()
+        {
+            Console.Write("What would you like to do (Edit, Remove, Return to Main Menu): ");
+
+            string menuSelection = Console.ReadLine();
+
+            switch (menuSelection.ToLower())
+            {
+                case "edit":
+                    Book.EditBook();
+                    break;
+                case "remove":
+                    Book.RemoveBook();
+                    break;
+                case "return":
+                    break;
+                default:
+                    Console.WriteLine("Invalid option. Please try again.\n");
+                    ResultMenu();
+                    break;
+            }
         }
     }
 }

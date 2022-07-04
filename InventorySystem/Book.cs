@@ -20,7 +20,7 @@ namespace InventorySystem
         [JsonProperty("Location")]
         public string BookLocation { get; set; }
         private string filePath = "bookdata.json";
-        public List<Book> Books = new List<Book>();
+        private List<Book> BookList = new List<Book>();
 
         public Book()
         {
@@ -38,19 +38,32 @@ namespace InventorySystem
 
         public void Initialize()
         {
-            Book[] bookJson = JsonConvert.DeserializeObject<Book[]>(File.ReadAllText(filePath));
-
-            foreach (var book in bookJson)
+            if (File.Exists(filePath))
             {
-                Books.Add(book);
+                Book[] bookJson = JsonConvert.DeserializeObject<Book[]>(File.ReadAllText(filePath));
+
+                foreach (var book in bookJson)
+                {
+                    BookList.Add(book);
+                }
+
+                BookId = bookJson.Max(x => x.BookId);
             }
 
-            BookId = bookJson.Max(x => x.BookId);
+            else
+            {
+                BookList.Add(new Book(0, "Example Book", "Example Author", 0, "Example Location"));
+
+                var bookJson = JsonConvert.SerializeObject(BookList);
+
+                File.WriteAllText(filePath, bookJson);
+            }
         }
 
         public void AddBook()
         {
             Book book = new Book();
+
             BookId++;
 
             Console.Write("What is the title of the book? ");
@@ -65,26 +78,25 @@ namespace InventorySystem
             Console.Write("Where is the book located? ");
             string bookLocation = Console.ReadLine();
 
-            Books.Add(new Book(BookId, bookName, authorName, bookCost, bookLocation));
+            BookList.Add(new Book(BookId, bookName, authorName, bookCost, bookLocation));
 
             Console.WriteLine($"{bookName} has been successfully added into the library!");
 
-            var bookJson = JsonConvert.SerializeObject(Books);
+            var bookJson = JsonConvert.SerializeObject(BookList);
 
             File.WriteAllText(filePath, bookJson);
         }
+
         public void List()
         {
             Console.Clear();
-
+            
             var bookJson = JsonConvert.DeserializeObject<Book[]>(File.ReadAllText(filePath));
-
+            
             foreach (var book in bookJson)
             {
                 Console.WriteLine($"ID: {book.BookId}\nTitle: {book.BookName}\nAuthor: {book.BookAuthor}\nValue: {book.BookCost.ToString("C")}\nLocation: {book.BookLocation}\n");
             }
-
-            Console.ReadLine();
         }
 
         public void Calculate()
@@ -94,7 +106,8 @@ namespace InventorySystem
             var bookJson = JsonConvert.DeserializeObject<Book[]>(File.ReadAllText(filePath));
 
             var sumValue = bookJson.Sum(x => x.BookCost);
-            Console.WriteLine($"The total value of your library is currently {sumValue.ToString("C")}");
+
+            Console.WriteLine($"There are {bookJson.Length} books in the library.\nThe total value is currently {sumValue.ToString("C")}\n\n");
         }
 
         public void FindByTitle()
@@ -121,6 +134,8 @@ namespace InventorySystem
                     $"Cost: {b.BookCost.ToString("C")}\n" +
                     $"Location: {b.BookLocation}\n");
             }
+
+            Menu.ResultMenu();
         }
         public void FindByAuthor()
         {
@@ -146,6 +161,8 @@ namespace InventorySystem
                     $"Cost: {b.BookCost.ToString("C")}\n" +
                     $"Location: {b.BookLocation}\n");
             }
+
+            Menu.ResultMenu();
         }
         public void FindByLocation()
         {
@@ -162,6 +179,7 @@ namespace InventorySystem
                                                  orderby book.BookId ascending
                                                  select book);
 
+
             foreach (var b in findBook)
             {
                 Console.WriteLine(
@@ -172,6 +190,53 @@ namespace InventorySystem
                     $"Location: {b.BookLocation}\n");
             }
 
+            Menu.ResultMenu();
+        }
+
+        public void RemoveBook()
+        {
+            Console.Write("Please enter the ID of the book you like to remove: ");
+            var desiredBook = int.Parse(Console.ReadLine());
+
+            var removeBook = BookList.SingleOrDefault(x => x.BookId == desiredBook);
+            if (removeBook != null)
+                BookList.Remove(removeBook);
+            
+            var bookJsonNew = JsonConvert.SerializeObject(BookList);
+
+            File.WriteAllText(filePath, bookJsonNew);
+        }
+
+        public void EditBook()
+        {
+            var bookJson = JsonConvert.DeserializeObject<Book[]>(File.ReadAllText(filePath));
+
+            Console.Write("Please enter the ID of the book you like to edit: ");
+            var desiredBook = int.Parse(Console.ReadLine());
+
+            var editBook = BookList.SingleOrDefault(x => x.BookId == desiredBook);
+            if (editBook != null)
+                BookList.Remove(editBook);
+
+            Console.Write("What is the title of the book? ");
+            string bookName = Console.ReadLine();
+
+            Console.Write("Who is the author? ");
+            string authorName = Console.ReadLine();
+
+            Console.Write("How much did the book cost? ");
+            double bookCost = int.Parse(Console.ReadLine());
+
+            Console.Write("Where is the book located? ");
+            string bookLocation = Console.ReadLine();
+
+            BookList.Add(new Book(desiredBook, bookName, authorName, bookCost, bookLocation));
+
+            Console.WriteLine($"{bookName} has been successfully edited!");
+
+            var bookJsonEdited = JsonConvert.SerializeObject(BookList);
+
+            File.WriteAllText(filePath, bookJsonEdited);
         }
     }
 }

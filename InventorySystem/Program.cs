@@ -7,7 +7,7 @@ namespace InventorySystem
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Welcome to the Centralized Book System!\n");
+            Console.WriteLine("Welcome to the Book Inventory System!\n");
 
             Menu.Primary();
         }
