@@ -10,7 +10,7 @@ namespace InventorySystem
     public class Book
     {
         [JsonProperty("Id")]
-        public int BookId { get; private set; }
+        private int BookId { get; set; }
         [JsonProperty("Name")]
         public string BookName { get; set; }
         [JsonProperty("Author")]
@@ -19,9 +19,8 @@ namespace InventorySystem
         public double BookCost { get; set; }
         [JsonProperty("Location")]
         public string BookLocation { get; set; }
-
         private string filePath = "bookdata.json";
-        public List<string> records = new List<string>();
+        public List<Book> Books = new List<Book>();
 
         public Book()
         {
@@ -36,11 +35,23 @@ namespace InventorySystem
             BookCost = value;
             BookLocation = location;
         }
-        public List<Book> Books = new List<Book>();
 
-        public void Add()
+        public void Initialize()
         {
-            var bookId = BookId;
+            Book[] bookJson = JsonConvert.DeserializeObject<Book[]>(File.ReadAllText(filePath));
+
+            foreach (var book in bookJson)
+            {
+                Books.Add(book);
+            }
+
+            BookId = bookJson.Max(x => x.BookId);
+        }
+
+        public void AddBook()
+        {
+            Book book = new Book();
+            BookId++;
 
             Console.Write("What is the title of the book? ");
             string bookName = Console.ReadLine();
@@ -54,25 +65,13 @@ namespace InventorySystem
             Console.Write("Where is the book located? ");
             string bookLocation = Console.ReadLine();
 
-            Books.Add(new Book(bookId, bookName, authorName, bookCost, bookLocation));
+            Books.Add(new Book(BookId, bookName, authorName, bookCost, bookLocation));
 
-            var fileData = new Book();
-            {
-                fileData.BookId = bookId;
-                fileData.BookName = bookName;
-                fileData.BookAuthor = authorName;
-                fileData.BookCost = bookCost;
-                fileData.BookLocation = bookLocation;
-            }
             Console.WriteLine($"{bookName} has been successfully added into the library!");
 
-            BookId++;
+            var bookJson = JsonConvert.SerializeObject(Books);
 
-            var bookJson = JsonConvert.SerializeObject(fileData);
-            File.AppendAllText(filePath, bookJson);
-
-            Console.WriteLine(bookJson);
-            Console.ReadLine();
+            File.WriteAllText(filePath, bookJson);
         }
         public void List()
         {
@@ -98,23 +97,74 @@ namespace InventorySystem
             Console.WriteLine($"The total value of your library is currently {sumValue.ToString("C")}");
         }
 
-        public void Find()
+        public void FindByTitle()
         {
             Console.Clear();
 
             var bookJson = JsonConvert.DeserializeObject<Book[]>(File.ReadAllText(filePath));
 
-            Console.Write("What book would you like to find? ");
+            Console.Write("What book title are you looking for? ");
+
             var desiredBook = Console.ReadLine().ToLower();
 
-            var findBook = from book in bookJson 
-                           where book.BookName.ToLower().Equals(desiredBook) 
-                           orderby book ascending 
-                           select book;
+            List<Book> findBook = new List<Book>(from book in bookJson
+                                                 where book.BookName.ToLower().Contains(desiredBook)
+                                                 orderby book.BookId ascending
+                                                 select book);
 
-            foreach(var b in findBook)
+            foreach (var b in findBook)
             {
-                Console.WriteLine($"" +
+                Console.WriteLine(
+                    $"ID: {b.BookId}\n" +
+                    $"Title: {b.BookName}\n" +
+                    $"Author: {b.BookAuthor}\n" +
+                    $"Cost: {b.BookCost.ToString("C")}\n" +
+                    $"Location: {b.BookLocation}\n");
+            }
+        }
+        public void FindByAuthor()
+        {
+            Console.Clear();
+
+            var bookJson = JsonConvert.DeserializeObject<Book[]>(File.ReadAllText(filePath));
+
+            Console.Write("What author are you looking for? ");
+
+            var desiredBook = Console.ReadLine().ToLower();
+
+            List<Book> findBook = new List<Book>(from book in bookJson
+                           where book.BookAuthor.ToLower().Contains(desiredBook)
+                           orderby book.BookId ascending
+                           select book);
+
+            foreach (var b in findBook)
+            {
+                Console.WriteLine(
+                    $"ID: {b.BookId}\n" +
+                    $"Title: {b.BookName}\n" +
+                    $"Author: {b.BookAuthor}\n" +
+                    $"Cost: {b.BookCost.ToString("C")}\n" +
+                    $"Location: {b.BookLocation}\n");
+            }
+        }
+        public void FindByLocation()
+        {
+            Console.Clear();
+
+            var bookJson = JsonConvert.DeserializeObject<Book[]>(File.ReadAllText(filePath));
+
+            Console.Write("What location are you wanting to look in? ");
+
+            var desiredBook = Console.ReadLine().ToLower();
+
+            List<Book> findBook = new List<Book>(from book in bookJson
+                                                 where book.BookLocation.ToLower().Contains(desiredBook)
+                                                 orderby book.BookId ascending
+                                                 select book);
+
+            foreach (var b in findBook)
+            {
+                Console.WriteLine(
                     $"ID: {b.BookId}\n" +
                     $"Title: {b.BookName}\n" +
                     $"Author: {b.BookAuthor}\n" +
