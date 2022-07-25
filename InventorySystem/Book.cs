@@ -104,6 +104,7 @@ namespace InventorySystem
                 BookList.Add(new Book(48, "Collected Poems of T.S. Eliot", "T. S. Eliot", 23.0, "Office"));
                 BookList.Add(new Book(49, "Antigone", "Sophocles", 31.75, "Bedroom"));
                 BookList.Add(new Book(50, "Alice's Adventures in Wonderland", "Lewis Carroll", 25.0, "Study"));
+                BookId = BookList.Count();
 
                 var bookJson = JsonConvert.SerializeObject(BookList);
 
@@ -335,7 +336,7 @@ namespace InventorySystem
 
             File.WriteAllText(filePath, bookJsonNew);
         }
-
+        
         public void EditBook(int bookId, string bookName, string authorName, double bookCost, string bookLocation)
         {
             var bookJson = JsonConvert.DeserializeObject<Book[]>(File.ReadAllText(filePath));
@@ -343,6 +344,15 @@ namespace InventorySystem
             var editBook = BookList.SingleOrDefault(x => x.BookId == bookId);
             if (editBook != null)
                 BookList.Remove(editBook);
+
+            if (BookList.Count > 1)
+            {
+                Console.WriteLine("There is more than one option available. Which book would you like?");
+                foreach (var book in BookList)
+                {
+                    Console.WriteLine(book.BookName);
+                }
+            }
 
             Menu.EditChoiceMenu(bookId, bookName, authorName, bookCost, bookLocation);
 

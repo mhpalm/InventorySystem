@@ -24,18 +24,23 @@ namespace InventorySystem
                 switch (menuSelection.ToLower())
                 {
                     case "add":
+                    case "a":
                         Book.AddBook();
                         break;
                     case "find":
+                    case "f":
                         FindMenu();
                         break;
                     case "calculate":
+                    case "c":
                         Book.Calculate();
                         break;
                     case "list":
+                    case "l":
                         Book.List();
                         break;
                     case "quit":
+                    case "q":
                         return;
                     default:
                         Console.WriteLine("\nInvalid option. Please try again.\n");
@@ -58,15 +63,19 @@ namespace InventorySystem
             switch (menuSelection.ToLower())
             {
                 case "title":
+                case "t":
                     Book.FindByTitle();
                     break;
                 case "author":
+                case "a":
                     Book.FindByAuthor();
                     break;
                 case "location":
+                case "l":
                     Book.FindByLocation();
                     break;
                 case "return":
+                case "r":
                     break;
                 default:
                     Console.WriteLine("Invalid option. Please try again.\n");
@@ -85,9 +94,11 @@ namespace InventorySystem
             switch (menuSelection.ToLower())
             {
                 case "edit":
+                case "e":
                     Book.EditBook(bookId, bookName, authorName, bookCost, bookLocation);
                     break;
                 case "remove":
+                case "r":
                     Book.RemoveBook(bookId, bookName);
                     break;
                 case "return":
@@ -127,18 +138,21 @@ namespace InventorySystem
             switch (menuSelection.ToLower())
             {
                 case "title":
+                case "t":
                     Console.Write("What is the title of the book? ");
                     bookName = Console.ReadLine();
                     Book.AddBook(bookId, bookName, authorName, bookCost, bookLocation);
                     Console.WriteLine($"{bookName} has been successfully edited!");
                     break;
                 case "author":
+                case "a":
                     Console.Write("Who is the author? ");
                     authorName = Console.ReadLine();
                     Book.AddBook(bookId, bookName, authorName, bookCost, bookLocation);
                     Console.WriteLine($"{bookName} has been successfully edited!");
                     break;
                 case "cost":
+                case "c":
                     Console.Write("How much did the book cost? $");
 
                     bookCost = 0.0;
@@ -155,6 +169,7 @@ namespace InventorySystem
                     Console.WriteLine($"{bookName} has been successfully edited!");
                     break;
                 case "location":
+                case "l":
                     Console.Write("Where is the book located? ");
                     bookLocation = Console.ReadLine();
                     Book.AddBook(bookId, bookName, authorName, bookCost, bookLocation);
