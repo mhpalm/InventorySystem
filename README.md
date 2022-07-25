@@ -9,11 +9,13 @@ The main menu prompts the user with four options:
 4) List all books
 5) Quit
 
-These options can be accessed by simply typing the first word in the line (e.g. "Add", "Find", "Calculate", "List", "Quit").
+These options can be accessed by simply typing the first word in the line (e.g. "Add", "Find", "Calculate", "List", "Quit") or by typing the first letter of the word (e.g. "A", "F", "C", "L", "Q").
 
 FEATURE LIST:
 <UL><LI>Implement a “master loop” console application where the user can repeatedly enter commands/perform actions, including choosing to exit the program</LI>
 <LI>Create a dictionary or list, populate it with several values, retrieve at least one value, and use it in your program</LI>
 <LI>Read data from an external file, such as text, JSON, CSV, etc and use that data in your application</LI>
-<LI>Use a LINQ query to retrieve information from a data structure (such as a list or array) or file</LI>
-<LI>Create 3 or more unit tests for your application</LI></UL>
+<LI>Use a LINQ query to retrieve information from a data structure (such as a list or array) or file</LI></UL>
+
+Note:
+An example JSON is created with 50 entries to demonstrate the application's capabilities, however additional entries can be added utilizing the "Add a book" functionality, edited using the "Find a book" and "Edit" functionalities, or removed using the "Find a book" and "Remove" functionalities.
