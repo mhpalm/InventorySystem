@@ -188,37 +188,82 @@ namespace InventorySystem
             Console.Clear();
 
             var bookJson = JsonConvert.DeserializeObject<Book[]>(File.ReadAllText(filePath));
-
-            Console.Write("What book title are you looking for? ");
-
-            var desiredBook = Console.ReadLine().ToLower();
+            var bookCount = 0;
             int bookId = 0;
             string bookName = "";
             string authorName = "";
             double bookCost = 0.0;
             string bookLocation = "";
 
-            List<Book> findBook = new List<Book>(from book in bookJson
-                                                 where book.BookName.ToLower().Contains(desiredBook)
-                                                 orderby book.BookId ascending
-                                                 select book);
-
-            foreach (var b in findBook)
+            while (bookCount == 0)
             {
-                Console.WriteLine(
-                    $"ID: {b.BookId}\n" +
-                    $"Title: {b.BookName}\n" +
-                    $"Author: {b.BookAuthor}\n" +
-                    $"Cost: {b.BookCost.ToString("C")}\n" +
-                    $"Location: {b.BookLocation}\n");
-                bookId = b.BookId;
-                bookName = b.BookName;
-                authorName = b.BookAuthor;
-                bookCost = b.BookCost;
-                bookLocation = b.BookLocation;
-            }
+                Console.Write("What book are you looking for? ");
 
-            Menu.ResultMenu(bookId, bookName, authorName, bookCost, bookLocation);
+                var desiredBook = Console.ReadLine().ToLower();
+
+                List<Book> findBook = new List<Book>(from book in bookJson
+                                                     where book.BookName.ToLower().Contains(desiredBook)
+                                                     orderby book.BookId ascending
+                                                     select book);
+                if (findBook.Count == 0)
+                {
+                    Console.WriteLine("There are currently no books by that name.\nIf you would like to add a new book, please return to the main menu.\n");
+                    break;
+                }
+                else
+                {
+                    bookCount = findBook.Count;
+
+                    foreach (var b in findBook)
+                    {
+                        Console.WriteLine(
+                            $"ID: {b.BookId}\n" +
+                            $"Title: {b.BookName}\n" +
+                            $"Author: {b.BookAuthor}\n" +
+                            $"Cost: {b.BookCost.ToString("C")}\n" +
+                            $"Location: {b.BookLocation}\n");
+
+                        bookId = b.BookId;
+                        bookName = b.BookName;
+                        authorName = b.BookAuthor;
+                        bookCost = b.BookCost;
+                        bookLocation = b.BookLocation;
+                    }
+                }
+
+                if (findBook.Count > 1)
+                {
+                    int bookSelection = 0;
+
+                    while (bookSelection == 0)
+                    {
+                        Console.WriteLine("Invalid input. Please enter a number.");
+                        Console.Write("Please enter the ID of the book you would like to select: ");
+                        int.TryParse(Console.ReadLine(), out bookSelection);
+                    }
+
+                    var book = findBook.Select(b => b.BookId).ToList();
+                    foreach (var b in findBook)
+                    {
+                        if (b.BookId == bookSelection)
+                        {
+                            bookId = b.BookId;
+                            bookName = b.BookName;
+                            authorName = b.BookAuthor;
+                            bookCost = b.BookCost;
+                            bookLocation = b.BookLocation;
+                        }
+                    }
+
+
+                    Menu.ResultMenu(bookSelection, bookName, authorName, bookCost, bookLocation);
+                }
+                else
+                {
+                    Menu.ResultMenu(bookId, bookName, authorName, bookCost, bookLocation);
+                }
+            };
+
         }
         public void FindByAuthor()
         {
@@ -245,7 +290,8 @@ namespace InventorySystem
                                                      select book);
                 if (findBook.Count == 0)
                 {
-                    Console.WriteLine("There are currently no books in the library by that author.\nIf you have a book by that author, please return to the main menu and add it in.\n");
+                    Console.WriteLine("There are currently no books by that author.\nIf you would like to add a book by that author, please return to the main menu.\n");
+                    break;
                 }
                 else
                 {
@@ -259,6 +305,7 @@ namespace InventorySystem
                             $"Author: {b.BookAuthor}\n" +
                             $"Cost: {b.BookCost.ToString("C")}\n" +
                             $"Location: {b.BookLocation}\n");
+
                         bookId = b.BookId;
                         bookName = b.BookName;
                         authorName = b.BookAuthor;
@@ -266,9 +313,40 @@ namespace InventorySystem
                         bookLocation = b.BookLocation;
                     }
                 }
+
+                if (findBook.Count > 1)
+                {
+                    int bookSelection = 0;
+
+                    while (bookSelection == 0)
+                    {
+                        Console.WriteLine("Invalid input. Please enter a number.");
+                        Console.Write("Please enter the ID of the book you would like to select: ");
+                        int.TryParse(Console.ReadLine(), out bookSelection);
+                    }
+
+                    var book = findBook.Select(b => b.BookId).ToList();
+                    foreach (var b in findBook)
+                    {
+                        if (b.BookId == bookSelection)
+                        {
+                            bookId = b.BookId;
+                            bookName = b.BookName;
+                            authorName = b.BookAuthor;
+                            bookCost = b.BookCost;
+                            bookLocation = b.BookLocation;
+                        }
+                    }
+
+
+                    Menu.ResultMenu(bookSelection, bookName, authorName, bookCost, bookLocation);
+                }
+                else
+                {
+                    Menu.ResultMenu(bookId, bookName, authorName, bookCost, bookLocation);
+                }
             };
 
-            Menu.ResultMenu(bookId, bookName, authorName, bookCost, bookLocation);
         }
         public void FindByLocation()
         {
@@ -295,7 +373,8 @@ namespace InventorySystem
                                                      select book);
                 if (findBook.Count == 0)
                 {
-                    Console.WriteLine("There are currently no books in that location.\nIf you have a book in that location, please return to the main menu and add it in.\n");
+                    Console.WriteLine("There are currently no books in that location.\nIf you would like to add a book in that location, please return to the main menu.\n");
+                    break;
                 }
                 else
                 {
@@ -317,16 +396,46 @@ namespace InventorySystem
                         bookLocation = b.BookLocation;
                     }
                 }
-            };
 
-            Menu.ResultMenu(bookId, bookName, authorName, bookCost, bookLocation);
+                if (findBook.Count > 1)
+                {
+                    int bookSelection = 0;
+
+                    while (bookSelection == 0)
+                    {
+                        Console.WriteLine("Invalid input. Please enter a number.");
+                        Console.Write("Please enter the ID of the book you would like to select: ");
+                        int.TryParse(Console.ReadLine(), out bookSelection);
+                    }
+
+                    var book = findBook.Select(b => b.BookId).ToList();
+                    foreach (var b in findBook)
+                    {
+                        if (b.BookId == bookSelection)
+                        {
+                            bookId = b.BookId;
+                            bookName = b.BookName;
+                            authorName = b.BookAuthor;
+                            bookCost = b.BookCost;
+                            bookLocation = b.BookLocation;
+                        }
+                    }
+
+
+                    Menu.ResultMenu(bookSelection, bookName, authorName, bookCost, bookLocation);
+                }
+                else
+                {
+                    Menu.ResultMenu(bookId, bookName, authorName, bookCost, bookLocation);
+                }
+            };
         }
 
         public void RemoveBook(int bookId, string bookName)
         {
-            Menu.RemoveChoiceMenu();
+            Menu.RemoveChoiceMenu(bookName);
 
-            var removeBook = BookList.SingleOrDefault(x => x.BookId == bookId);
+            var removeBook = BookList.Single(b => b.BookId == bookId);
             if (removeBook != null)
                 BookList.Remove(removeBook);
             
@@ -340,19 +449,10 @@ namespace InventorySystem
         public void EditBook(int bookId, string bookName, string authorName, double bookCost, string bookLocation)
         {
             var bookJson = JsonConvert.DeserializeObject<Book[]>(File.ReadAllText(filePath));
-
-            var editBook = BookList.SingleOrDefault(x => x.BookId == bookId);
+            
+            var editBook = BookList.Single(b => b.BookId == bookId);
             if (editBook != null)
                 BookList.Remove(editBook);
-
-            if (BookList.Count > 1)
-            {
-                Console.WriteLine("There is more than one option available. Which book would you like?");
-                foreach (var book in BookList)
-                {
-                    Console.WriteLine(book.BookName);
-                }
-            }
 
             Menu.EditChoiceMenu(bookId, bookName, authorName, bookCost, bookLocation);
 

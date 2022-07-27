@@ -109,9 +109,9 @@ namespace InventorySystem
                     break;
             }
         }
-        public static void RemoveChoiceMenu()
+        public static void RemoveChoiceMenu(string bookName)
         {
-            Console.Write("Are you sure you want to remove this book? (Y/N): ");
+            Console.Write($"Are you sure you want to remove {bookName}? (Y/N): ");
 
             string menuSelection = Console.ReadLine();
 
@@ -124,7 +124,7 @@ namespace InventorySystem
                     break;
                 default:
                     Console.WriteLine("Invalid option. Please try again.\n");
-                    RemoveChoiceMenu();
+                    RemoveChoiceMenu(bookName);
                     break;
             }
         }
